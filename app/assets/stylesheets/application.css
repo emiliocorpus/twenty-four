@@ -13,3 +13,28 @@
  *= require_tree .
  *= require_self
  */
+
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}
+.debugger-red {
+  border: 1px solid red;
+}
+.debugger-blue {
+  border: 1px solid blue;
+}
+
+.debugger-green {
+  border: 1px solid green;
+}
+
+.debugger {
+  border:1px solid red;
+}
