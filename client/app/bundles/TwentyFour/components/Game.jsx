@@ -31,8 +31,19 @@ export default class Game extends React.Component {
     }
 
     removeFromSelected(die) {
-    	var index = this.state.selectedDie.indexOf(die)
-    	var updatedSelected =  React.addons.update(this.state.selectedDie, {$splice: [[index,1]]})
+    	var selected = []
+    	for (var i=0; i < this.state.selectedDie.length; i ++) {
+    		selected.push(this.state.selectedDie[i])
+    	}
+    	debugger
+    	// var index = selected.indexOf(die)
+    	var updatedSelected = selected.filter(function(item){
+    		if (item != die) {
+    			debugger
+    			return item
+    		}
+    	})
+    	debugger
     	this.setState({
     		selectedDie: updatedSelected
     	})

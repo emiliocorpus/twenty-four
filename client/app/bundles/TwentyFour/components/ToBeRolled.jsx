@@ -9,9 +9,6 @@ export default class ToBeRolled extends React.Component {
         this.displayName = 'ToBeRolled';
     }
 
-     //FUNCTION THAT CLONES OBJECT
-    
-
     handleDisplay() {
     	var display=[];
     	for(var i = 0; i < this.props.dice.length; i ++) {
