@@ -5,7 +5,6 @@ gem 'rails', '4.2.3'
 gem 'pg'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'figaro'
@@ -14,6 +13,8 @@ gem 'oauth2'
 gem 'rails_12factor'
 gem "react_on_rails", "~> 5"
 gem 'nokogiri', '~> 1.6.7.1'
+gem 'foreman'
+gem 'turbolinks'
 
 
 group :development, :test do
