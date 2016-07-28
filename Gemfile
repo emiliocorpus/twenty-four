@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+
 gem 'rails', '4.2.3'
 gem 'pg'
 gem 'sass-rails', '~> 5.0'
@@ -12,6 +13,7 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'oauth2'
 gem 'rails_12factor'
 gem "react_on_rails", "~> 5"
+gem 'nokogiri', '~> 1.6.7.1'
 
 
 group :development, :test do
