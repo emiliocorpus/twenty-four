@@ -16,55 +16,53 @@ export default class Game extends React.Component {
         	lastRoll:[],
         	selectedDie:[]
         }
+
+        this.selectDie = this.selectDie.bind(this)
+        this.removeFromSelected = this.removeFromSelected.bind(this)
+        this.submitSelectedDie = this.submitSelectedDie.bind(this)
     }
 
-    // FUNCTION THAT CLONES OBJECT
-	makeClone(obj) {
-	    var copy;
-	        // Handle the 3 simple types, and null or undefined
-	        if (null == obj || "object" != typeof obj) return obj;
-	        // Handle Array
-	        if (obj instanceof Array) {
-	            copy = [];
-	            for (var i = 0, len = obj.length; i < len; i++) {
-	                copy[i] = this.makeClone(obj[i]);
-	            }
-	            return copy;
-	        }
-	        // Handle Object
-	        if (obj instanceof Object) {
-	            copy = {};
-	            for (var attr in obj) {
-	                if (obj.hasOwnProperty(attr)) copy[attr] = this.makeClone(obj[attr]);
-	            }
-	            return copy;
-	        }
-
-	        throw new Error("Unable to copy obj! Its type isn't supported.");
-	}
-
     selectDie(die) {
-    	e.preventDefault();
-    	var selected = this.makeClone(this.state.selectedDie);
+    	var selected = this.state.selectedDie
     	selected.push(die);
     	this.setState({
     		selectedDie: selected
-    	});
+    	})
     }
+
+    removeFromSelected(die) {
+    	var index = this.state.selectedDie.indexOf(die)
+    	var updatedSelected =  React.addons.update(this.state.selectedDie, {$splice: [[index,1]]})
+    	this.setState({
+    		selectedDie: updatedSelected
+    	})
+    }
+
+
 
     submitSelectedDie(e){
     	e.preventDefault();
-    	var selected = this.makeClone(this.state.selectedDie);
-    	this.setState({
-    		keptDice: selected
-    	})
+    	var selected = this.state.selectedDie
+    	var kept = this.state.keptDice
+    	for (var i = 0; i < selected.length;i++) {
+    		kept.push(selected[i])
+    	}
+    	if (selected.length != 0) {
+    		this.setState({
+	    		keptDice: kept,
+	    		selectedDie:[],
+	    		toBeRolledDice: []
+
+	    	})
+    	}
+		    	
     }
 
 
     handleRoll(e) {
     	e.preventDefault();
     	var values = []
-    	for (var i = 0; i <= 6 - this.state.keptDice.length; i++) {
+    	for (var i = 0; i < 6 - this.state.keptDice.length; i++) {
     		var value = Math.floor((Math.random() * 6) + 1);
     		values.push(value)
     	}
@@ -78,12 +76,12 @@ export default class Game extends React.Component {
         return (
         	<div className="col-lg-12 debugger-green">
 	        	<div className="row">
-	        		<RolledDice dice={this.state.rolledDice}/>
-	        		<ToBeRolled dice={this.state.toBeRolledDice} handleSelectDie={this.selectDie.bind(this)}/> 
+	        		<RolledDice dice={this.state.keptDice}/>
+	        		<ToBeRolled dice={this.state.toBeRolledDice} handleSelectDie={this.selectDie} handleRemoveFromSelected={this.removeFromSelected}/> 
 	        		<button onClick={this.handleRoll.bind(this)}>
 	        			Roll
 	        		</button>
-	        		<button onClick={this.submitSelectedDie.bind(this)}>
+	        		<button onClick={this.submitSelectedDie}>
 	        			Select
 	        		</button>
 	        	</div>

@@ -12,13 +12,28 @@ export default class Dice extends React.Component{
 	  }
 	}
 
-	toggleSelectDie() {
+
+
+	toggleSelectDie(e) {
 		console.log("selecting")
-		debugger
 		if (this.props.selectable) {
 			this.setState({
 				select: (!this.state.select)
 			})
+			this.handleToggleDie(this)
+		}
+		else {
+			console.log('unselectable')
+		}
+
+	}
+
+	handleToggleDie(dice) {
+		if (this.state.select) {
+			this.props.removeFromSelected(dice)
+		}
+		else {
+			this.props.selectDie(dice)
 		}
 	}
 

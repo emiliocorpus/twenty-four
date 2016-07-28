@@ -9,14 +9,20 @@ export default class ToBeRolled extends React.Component {
         this.displayName = 'ToBeRolled';
     }
 
+     //FUNCTION THAT CLONES OBJECT
+    
+
     handleDisplay() {
     	var display=[];
     	for(var i = 0; i < this.props.dice.length; i ++) {
-    		display.push(<Dice value={this.props.dice[i]} key={i} selectable={true} selectDie={this.props.handleSelectDie}/>)
+    		display.push(<Dice value={this.props.dice[i]} key={i} selectable={true} selectDie={this.props.handleSelectDie} removeFromSelected={this.props.handleRemoveFromSelected}/>)
     	}
     	return (
     		<div className="dice-container">
-    			{display}
+                <FlipMove enterAnimation="fade" leaveAnimation="fade">
+    			     {display}
+                </FlipMove>
+
     		</div>
     	)
     }
@@ -25,9 +31,9 @@ export default class ToBeRolled extends React.Component {
     	return (
     		<div className="well">
     			<p>Last Roll</p>
-                <FlipMove enterAnimation="fade" leaveAnimation="fade">
+                
     			     {this.handleDisplay()}
-                </FlipMove>
+                
     		</div>
     	)
     }
