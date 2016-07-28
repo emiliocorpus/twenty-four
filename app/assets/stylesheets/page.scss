@@ -12,3 +12,34 @@ div.body-container {
 div.content-container {
 	text-align:center;
 }
+
+
+div.dice {
+	background-color:#FFF6ED;
+	height:50px;
+	width:50px;
+	display:inline-block;
+	line-height:50px;
+	vertical-align:middle;
+	margin:1%;
+	border:1px solid black;
+}
+
+div.dice-selected {
+	border:5px solid yellow;
+}
+
+div.dice-container {
+	min-height:100px;
+}
+
+div.dice div {
+	display:table-cell;
+	text-align:center;
+	margin:1%;
+}
+
+div.well {
+	text-align:center;
+	margin:0 auto;
+}

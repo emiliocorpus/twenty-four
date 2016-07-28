@@ -1,4 +1,5 @@
 import React from 'react';
+import FlipMove from 'react-flip-move';
 import _ from 'lodash';
 import Dice from './Dice';
 
@@ -6,22 +7,27 @@ export default class ToBeRolled extends React.Component {
 	constructor(props) {
         super(props);
         this.displayName = 'ToBeRolled';
+    }
 
-        this.state = {
-        	gameState: "hello"
-        }
+    handleDisplay() {
+    	var display=[];
+    	for(var i = 0; i < this.props.dice.length; i ++) {
+    		display.push(<Dice value={this.props.dice[i]} key={i} selectable={true} selectDie={this.props.handleSelectDie}/>)
+    	}
+    	return (
+    		<div className="dice-container">
+    			{display}
+    		</div>
+    	)
     }
 
     render() {
     	return (
     		<div className="well">
-    			<p>Unrolled Dice</p>
-    			<Dice value={1}/>
-    			<Dice value={2}/>
-    			<Dice value={3}/>
-    			<Dice value={4}/>
-    			<Dice value={5}/>
-    			<Dice value={6}/>
+    			<p>Last Roll</p>
+                <FlipMove enterAnimation="fade" leaveAnimation="fade">
+    			     {this.handleDisplay()}
+                </FlipMove>
     		</div>
     	)
     }
