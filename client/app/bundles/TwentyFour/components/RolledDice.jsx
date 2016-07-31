@@ -29,9 +29,10 @@ export default class RolledDice extends React.Component {
     render() {
     	return (
     		<div className="well">
+                        <hr/>
+                
     			<p>Rolled Dice</p>
     				{this.handleDisplay()}
-    			
     		</div>
     	)
     }

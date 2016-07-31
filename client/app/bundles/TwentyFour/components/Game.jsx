@@ -11,6 +11,12 @@ export default class Game extends React.Component {
         this.displayName = 'Game';
 
         this.state = {
+        	game: 'choosing',
+        	numOfPlayers: 0,
+        	numOfComputers: 0,
+        	currentPlayerTurn:0,
+        	scores: [],
+        	scoreToBeat: "--",
         	keptDice: [],
         	toBeRolledDice: [],
         	lastRoll:[],
@@ -21,6 +27,7 @@ export default class Game extends React.Component {
         this.selectDie = this.selectDie.bind(this)
         this.removeFromSelected = this.removeFromSelected.bind(this)
         this.submitSelectedDie = this.submitSelectedDie.bind(this)
+        this.choosePlayers = this.choosePlayers.bind(this)
     }
 
     selectDie(die) {
@@ -59,21 +66,27 @@ export default class Game extends React.Component {
     			fours ++
     		}
     	}
-
     	if (fours > 0) {
-    		debugger
     		totalScore -= 4
     	}
-    	if (twos >0) {
-    		debugger
+    	if (twos > 0) {
     		totalScore -= 2
     	}
-    	if ( fours + twos === 0) {
-    		debugger
+    	if ( fours === 0 || twos === 0) {
     		totalScore = 0
     	}
-    	debugger
     	return totalScore
+    }
+
+
+    calculatMinScoreToBeat(scores) {
+    	var minScore = scores[0]
+    	for (var i=0;i<scores.length; i++) {
+    		if (scores[i] < minScore) {
+    			minScore = scores[i]
+    		}
+    	}
+    	return minScore
     }
 
     submitSelectedDie(e){
@@ -83,18 +96,40 @@ export default class Game extends React.Component {
     	for (var i = 0; i < selected.length;i++) {
     		kept.push(selected[i])
     	}
-    	debugger
-
+    	var scores = this.state.scores
     	var score = this.countScore(kept)
-    	debugger
+    	scores.push(score)
+
     	if (selected.length != 0) {
-    		this.setState({
-	    		keptDice: kept,
-	    		selectedDie:[],
-	    		toBeRolledDice: [],
-	    		lastRoll:[],
-	    		totalScore: score
-	    	})
+    		if (kept.length == 6) {
+    			var scoreToBeat = this.calculatMinScoreToBeat(scores)
+    			var turn = this.state.currentPlayerTurn + 1
+    			this.setState({
+    				currentPlayerTurn: turn,
+    				scoreToBeat: scoreToBeat,
+		    		keptDice: [],
+		    		scores: scores,
+		    		selectedDie:[],
+		    		toBeRolledDice: [],
+		    		lastRoll:[],
+		    		totalScore: 0
+		    	})
+		    	if (this.state.scores.length === this.state.numOfPlayers) {
+		    		this.setState({
+		    			game: "over"
+		    		})
+		    	}
+    		}
+    		else {
+    			this.setState({
+		    		keptDice: kept,
+		    		scores: scores,
+		    		selectedDie:[],
+		    		toBeRolledDice: [],
+		    		lastRoll:[],
+		    		totalScore: score
+		    	})
+    		}
     	}
     }
 
@@ -113,24 +148,83 @@ export default class Game extends React.Component {
     	}
     }
 
+    choosePlayers(e) {
+    	e.preventDefault()
+    	this.setState({
+    		game: "active",
+    		numOfPlayers: parseInt(e.target.children[1].value),
+    		numOfComputers: parseInt(e.target.children[3].value),
+    	})
+
+
+    }
+
     render() {
-        return (
-        	<div className="col-lg-12 debugger-green">
-	        	<div className="row">
-	        		<div className="col-lg-4">
-	        			{this.state.totalScore}
-	        		</div>
-	        		<RolledDice dice={this.state.keptDice}/>
-	        		<ToBeRolled dice={this.state.toBeRolledDice} handleSelectDie={this.selectDie} handleRemoveFromSelected={this.removeFromSelected}/> 
-	        		<button onClick={this.handleRoll.bind(this)}>
-	        			Roll
-	        		</button>
-	        		<button onClick={this.submitSelectedDie}>
-	        			Select
-	        		</button>
-	        	</div>
-	        </div>
-        )
+    	if (this.state.game === "choosing") {
+    		return (
+    			<div className="col-lg-12 debugger-green">
+    				<form onSubmit={this.choosePlayers}>
+
+    			      <span>Players: </span>
+    				  <select name="total_players">
+    				    <option value="2">2</option>
+    				    <option value="3">3</option>
+    				    <option value="4">4</option>
+    				    <option value="5">5</option>
+    				  </select>
+    				  &nbsp;&nbsp;
+
+    				  <span>Number of Computers: </span>
+    				  <select name="total_computers">
+    				    <option value='0'>0</option>
+    				    <option value="1">1</option>
+    				    <option value="2">2</option>
+    				    <option value="3">3</option>
+    				    <option value="4">4</option>
+    				  </select>
+    				  <br/><br/>
+
+    				  <input type="submit"/>
+    				</form>
+    			</div>
+    		)
+    	}
+    	else {
+	        return (
+	        	<div className="col-lg-12 debugger-red">
+		        	<div className="row">
+		        		<div className="well">
+		        			<div className="col-lg-4">
+			        			<p>Total Score</p>
+			        			{this.state.totalScore}
+			        		</div>
+
+			        		<div className="col-lg-4">
+			        			<p>Current Turn</p>
+			        			Player {this.state.currentPlayerTurn + 1}
+			        		</div>
+
+			        		<div className="col-lg-4">
+			        			<p>Score To Beat</p>
+			        			{this.state.scoreToBeat}
+			        		</div>
+
+
+
+		        		</div>
+		        		<RolledDice dice={this.state.keptDice}/>
+		        		<ToBeRolled dice={this.state.toBeRolledDice} handleSelectDie={this.selectDie} handleRemoveFromSelected={this.removeFromSelected}/> 
+		        		<button onClick={this.handleRoll.bind(this)}>
+		        			Roll
+		        		</button>
+		        		<button onClick={this.submitSelectedDie}>
+		        			Select
+		        		</button>
+		        	</div>
+		        </div>
+	        )
+    	}
+        
     }
 }
 
