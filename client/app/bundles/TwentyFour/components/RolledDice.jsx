@@ -7,14 +7,15 @@ export default class RolledDice extends React.Component {
 	constructor(props) {
         super(props);
         this.displayName = 'RolledDice';
+
     }
 
     handleDisplay() {
     	var display=[];
     	for(var i = 0; i < this.props.dice.length; i ++) {
-    		debugger
-    		display.push(<Dice value={this.props.dice[i].props.value} key={i} selectable={false} />)
+    		display.push(<Dice value={this.props.dice[i].props.value} key={i} selectable={false}/>)
     	}
+
     	return (
     		<div className="dice-container">
     			<FlipMove enterAnimation='elevator' leaveAnimation="elevator">
@@ -24,11 +25,11 @@ export default class RolledDice extends React.Component {
     	)
     }
 
+
     render() {
     	return (
     		<div className="well">
     			<p>Rolled Dice</p>
-    			
     				{this.handleDisplay()}
     			
     		</div>

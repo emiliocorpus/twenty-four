@@ -12,8 +12,6 @@ export default class Dice extends React.Component{
 	  }
 	}
 
-
-
 	toggleSelectDie(e) {
 		console.log("selecting")
 		if (this.props.selectable) {
