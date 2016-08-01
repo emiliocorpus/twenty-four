@@ -16,6 +16,7 @@ export default class Game extends React.Component {
         	numOfComputers: 0,
         	currentPlayerTurn:0,
         	scores: [],
+        		// [{playerType: "computer/player", score: number, rolled: true/false}]
         	scoreToBeat: "--",
         	keptDice: [],
         	toBeRolledDice: [],
@@ -80,14 +81,16 @@ export default class Game extends React.Component {
 
 
     calculatMinScoreToBeat(scores) {
-    	var minScore = scores[0]
+    	var minScore = scores[0].score
     	for (var i=0;i<scores.length; i++) {
-    		if (scores[i] < minScore) {
-    			minScore = scores[i]
+    		if (scores[i].score < minScore) {
+    			minScore = scores[i].score
     		}
     	}
     	return minScore
     }
+
+    
 
     submitSelectedDie(e){
     	e.preventDefault();
@@ -96,42 +99,49 @@ export default class Game extends React.Component {
     	for (var i = 0; i < selected.length;i++) {
     		kept.push(selected[i])
     	}
-    	var scores = this.state.scores
     	var score = this.countScore(kept)
-    	scores.push(score)
-
     	if (selected.length != 0) {
-    		if (kept.length == 6) {
-    			var scoreToBeat = this.calculatMinScoreToBeat(scores)
-    			var turn = this.state.currentPlayerTurn + 1
-    			this.setState({
-    				currentPlayerTurn: turn,
-    				scoreToBeat: scoreToBeat,
-		    		keptDice: [],
-		    		scores: scores,
-		    		selectedDie:[],
-		    		toBeRolledDice: [],
-		    		lastRoll:[],
-		    		totalScore: 0
-		    	})
-		    	if (this.state.scores.length === this.state.numOfPlayers) {
-		    		this.setState({
-		    			game: "over"
-		    		})
-		    	}
-    		}
-    		else {
-    			this.setState({
-		    		keptDice: kept,
-		    		scores: scores,
-		    		selectedDie:[],
-		    		toBeRolledDice: [],
-		    		lastRoll:[],
-		    		totalScore: score
-		    	})
-    		}
+    		this.submitScoreOnEndOfTurn(selected, kept, score)
     	}
     }
+
+    submitScoreOnEndOfTurn(selected, kept, score) {
+    	if (kept.length == 6) {
+			var scores = this.state.scores
+			scores[this.state.currentPlayerTurn].score = score
+			scores[this.state.currentPlayerTurn].turn = false
+			scores[this.state.currentPlayerTurn + 1].turn = true
+			this.state.currentPlayerTurn += 1
+			this.state.scoreToBeat = this.calculatMinScoreToBeat(scores)
+			this.state.keptDice = []
+			this.state.selectedDie = []
+			this.state.toBeRolledDice = []
+			this.state.lastRoll = []
+			this.state.totalScore = 0
+
+			this.setState(this.state)
+
+	    	debugger
+	    	if (scores[this.state.currentPlayerTurn].playerType==="computer") {
+	    		debugger
+	    		this.handleComputerLogic()
+		    }
+
+    	}
+		else {
+			debugger
+			this.setState({
+	    		keptDice: kept,
+	    		selectedDie:[],
+	    		toBeRolledDice: [],
+	    		lastRoll:[],
+	    		totalScore: score
+	    	})
+		}
+    }
+
+
+
 
     handleRoll(e) {
     	e.preventDefault();
@@ -146,17 +156,50 @@ export default class Game extends React.Component {
     			toBeRolledDice: values
     		})
     	}
+
     }
+
+    handleComputerLogic(){
+    	this.rollComputer()
+
+    }
+
+    rollComputer() {
+    	debugger
+		var values = []
+		for (var i = 0; i < 6 - this.state.keptDice.length; i++) {
+			var value = Math.floor((Math.random() * 6) + 1);
+			values.push(value)
+		}
+		this.setState({
+			lastRoll: values,
+			toBeRolledDice: values,
+			selectedDie: []
+		})
+    }
+
 
     choosePlayers(e) {
     	e.preventDefault()
+    	var numPlayers = parseInt(e.target.children[1].value)
+    	var numComputers = parseInt(e.target.children[3].value)
+    	var scores=[]
+    	for (var i=0; i < numPlayers - numComputers;i++) {
+    		scores.push({playerType:"player", score: 0, turn: false})
+    	}
+    	for (var i=0; i < numComputers;i++) {
+    		scores.push({playerType:"computer", score: 0, turn: false})
+    	}
+
+    	scores[0].turn = true
+    	
     	this.setState({
     		game: "active",
-    		numOfPlayers: parseInt(e.target.children[1].value),
-    		numOfComputers: parseInt(e.target.children[3].value),
+    		scores: scores,
+    		numOfPlayers: numPlayers,
+    		numOfComputers: numComputers,
     	})
-
-
+    	
     }
 
     render() {
@@ -190,6 +233,7 @@ export default class Game extends React.Component {
     		)
     	}
     	else {
+
 	        return (
 	        	<div className="col-lg-12 debugger-red">
 		        	<div className="row">
