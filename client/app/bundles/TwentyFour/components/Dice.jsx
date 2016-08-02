@@ -10,8 +10,8 @@ export default class Dice extends React.Component{
 	render() {
 
 		return (
-			<div>
-				this is dice
+			<div className="dice">
+				{this.props.value}
 			</div>
 		);
 	}
