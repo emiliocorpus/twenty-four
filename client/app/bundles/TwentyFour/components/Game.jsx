@@ -12,15 +12,27 @@ export default class Game extends React.Component {
             currentStage: "start",
             totalPlayers: 2,
             totalComputers:0
-
-
         }
+
+        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers'])
        
     }
 
     handleSubmitPlayers(e) {
         e.preventDefault()
-        debugger
+        this.setState({
+            totalPlayers: parseInt(e.target.children[0].value),
+            currentStage: "chooseComputers"
+        })
+    }
+
+    handleSubmitComputers(e) {
+        e.preventDefault()
+        this.setState({
+            totalComputers: parseInt(e.target.children[0].value),
+            currentStage: "active",
+            currentTurn: 0
+        })
     }
 
 
@@ -40,6 +52,25 @@ export default class Game extends React.Component {
                               <option value="3">3</option>
                               <option value="4">4</option>
                               <option value="5">5</option>
+                            </select>
+                            <br/><br/>
+                            <input type='submit'/>
+                        </form>
+                    </div>
+                break
+            case "chooseComputers":
+                var values =[]
+                for (var i=0;i<this.state.totalPlayers-1;i++){
+                    values.push(<option value={i+1} key={i}>{i+1}</option>)
+                }
+                display = 
+                    <div>
+                        <p>
+                            Choose amount of computers:
+                        </p>
+                        <form onSubmit={this.handleSubmitComputers}> 
+                            <select name="total-computers">
+                              {values}
                             </select>
                             <br/><br/>
                             <input type='submit'/>
