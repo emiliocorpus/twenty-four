@@ -11,7 +11,7 @@ export default class PageContainer extends React.Component {
 
   render() {
     return (
-      <div className="container body-container">
+      <div className="container-fluid body-container">
         <Page name={this.props.name}/>
       </div>
     );
