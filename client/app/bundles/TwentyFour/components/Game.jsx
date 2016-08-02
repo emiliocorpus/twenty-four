@@ -16,6 +16,7 @@ export default class Game extends React.Component {
             totalComputers:0,
             lastRoll:[],
             keptDice:[],
+            selected:[]
 
         }
 
@@ -138,7 +139,7 @@ export default class Game extends React.Component {
         switch(type) {
             case "kept":
                 for (var i=0; i< dice.length;i++){
-                    display.push(<Dice value={dice[i]} selectable={false} key={i}/>)
+                    display.push(<Dice value={dice[i]} selectable={false} key={i} />)
                 }
                 break
             case "last":
