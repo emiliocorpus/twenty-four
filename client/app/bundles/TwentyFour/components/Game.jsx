@@ -18,6 +18,11 @@ export default class Game extends React.Component {
        
     }
 
+    handleSubmitPlayers(e) {
+        e.preventDefault()
+        debugger
+    }
+
 
     controlGameFlow(){
         var display
@@ -29,12 +34,16 @@ export default class Game extends React.Component {
                         <p>
                             Choose amount of players:
                         </p>
-                        <select name="carlist">
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
-                        </select>
+                        <form onSubmit={this.handleSubmitPlayers}> 
+                            <select name="total-players">
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+                            <br/><br/>
+                            <input type='submit'/>
+                        </form>
                     </div>
                 break
             case "active":
