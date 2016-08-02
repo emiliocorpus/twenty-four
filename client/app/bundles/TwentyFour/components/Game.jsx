@@ -23,7 +23,7 @@ export default class Game extends React.Component {
 
         }
 
-        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers', 'displayDice', 'handleActiveGame', 'handleRoll','addSelected', 'removeSelected', 'handleSubmitSelectedDice', 'calculateScore'])
+        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers', 'displayDice', 'handleActivePlayer', 'handleRoll','addSelected', 'removeSelected', 'handleSubmitSelectedDice', 'calculateScore'])
     }
     // METHODS FOR CURRENTSTAGE == "start"
     handleStart() {
@@ -79,15 +79,15 @@ export default class Game extends React.Component {
         e.preventDefault()
         this.setState({
             totalComputers: parseInt(e.target.children[0].value),
-            currentStage: "active",
+            currentStage: "active-player",
             currentTurn: 0,
             pointInTurn: "roll"
         })
     }
 
 
-    //METHODS FOR AN ACTIVE GAME
-    handleActiveGame() {
+    //METHODS FOR AN ACTIVE PLAYER GAME
+    handleActivePlayer() {
         var button
         if (this.state.pointInTurn === "roll") {
             button = <button onClick={this.handleRoll}>Roll</button>
@@ -136,7 +136,6 @@ export default class Game extends React.Component {
             </div>
         )
     }
-
     
     handleRoll(e){
         e.preventDefault()
@@ -159,15 +158,35 @@ export default class Game extends React.Component {
         var kept = this.state.keptDice.concat(values)
         var score = this.calculateScore(kept)
         if (this.state.keptDice.length === 5) {
-            this.setState({
-                keptDice: [],
-                selected:[],
-                lastRoll:[],
-                scores:this.state.scores.concat([score]),
-                pointInTurn:"roll",
-                currentTurn: this.state.currentTurn + 1,
-                totalScore: "--"
-            })
+
+            if (this.state.currentTurn + 1 >= this.state.totalPlayers - this.state.totalComputers) {
+                this.setState({
+                    keptDice: [],
+                    selected:[],
+                    lastRoll:[],
+                    scores:this.state.scores.concat([score]),
+                    pointInTurn:"roll",
+                    currentTurn: this.state.currentTurn + 1,
+                    totalScore: "--",
+                    currentStage: "active-computer"
+                })
+
+            }
+            else {
+                this.setState({
+                    keptDice: [],
+                    selected:[],
+                    lastRoll:[],
+                    scores:this.state.scores.concat([score]),
+                    pointInTurn:"roll",
+                    currentTurn: this.state.currentTurn + 1,
+                    totalScore: "--"
+                })
+            }
+
+
+
+            
         }
         else {
             this.setState({
@@ -203,12 +222,6 @@ export default class Game extends React.Component {
         return score
     }
 
-
-
-
-
-
-
     addSelected(dice){
         this.setState({
             selected: this.state.selected.concat([dice])
@@ -224,7 +237,10 @@ export default class Game extends React.Component {
     }
 
 
-
+    // METHODS FOR AN ACTIVE COMPUTER GAME
+    handleActiveComputer() {
+        debugger
+    }
 
 
 
@@ -246,9 +262,12 @@ export default class Game extends React.Component {
             case "chooseComputers":
                 display = this.handleChooseComputers()
                 break
-            case "active":
-                display = this.handleActiveGame()
+            case "active-player":
+                display = this.handleActivePlayer()
                 break
+            case "active-computer":
+                display = this.handleActiveComputer()
+                break;
             case "end":
                 console.log("You have reached the end game")
                 display = <p>You have reaced the end game</p>
