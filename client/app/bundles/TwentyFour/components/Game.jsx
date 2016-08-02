@@ -19,11 +19,13 @@ export default class Game extends React.Component {
             scores:[],
             lastRoll:[],
             keptDice:[],
-            selected:[]
+            selected:[],
+            computerTimeout: null,
+            scoreToBeat: "--"
 
         }
 
-        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers', 'displayDice', 'handleActivePlayer', 'handleRoll','addSelected', 'removeSelected', 'handleSubmitSelectedDice', 'calculateScore'])
+        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers', 'displayDice', 'handleActivePlayer', 'handleRoll','addSelected', 'removeSelected', 'handleSubmitSelectedDice', 'calculateScore', 'handleEndGame','determineWinner','handleReset'])
     }
     // METHODS FOR CURRENTSTAGE == "start"
     handleStart() {
@@ -50,7 +52,8 @@ export default class Game extends React.Component {
         e.preventDefault()
         this.setState({
             totalPlayers: parseInt(e.target.children[0].value),
-            currentStage: "chooseComputers"
+            currentStage: "active-player",
+            pointInTurn: "roll"
         })
     }
 
@@ -110,7 +113,7 @@ export default class Game extends React.Component {
 
                     <div className=".col-xs-6 .col-sm-4 col-md-4">
                         SCORE TO BEAT:<br/>
-                        --
+                        {this.state.scoreToBeat}
                     </div>
                 </div>
 
@@ -157,32 +160,37 @@ export default class Game extends React.Component {
         }
         var kept = this.state.keptDice.concat(values)
         var score = this.calculateScore(kept)
-        if (this.state.keptDice.length === 5) {
+        var scores = this.state.scores.concat([score])
+        var minScore = this.calculateMinScoreToBeat(scores)
+        if (this.state.keptDice.length === 5 || kept.length === 6) {
 
-            if (this.state.currentTurn + 1 >= this.state.totalPlayers - this.state.totalComputers) {
-                this.setState({
-                    keptDice: [],
-                    selected:[],
-                    lastRoll:[],
-                    scores:this.state.scores.concat([score]),
-                    pointInTurn:"roll",
-                    currentTurn: this.state.currentTurn + 1,
-                    totalScore: "--",
-                    currentStage: "active-computer"
-                })
+                if (this.state.currentTurn === this.state.totalPlayers - 1) {
+                    this.setState({
+                        keptDice: [],
+                        selected:[],
+                        lastRoll:[],
+                        scores:this.state.scores.concat([score]),
+                        pointInTurn:"roll",
+                        currentTurn: this.state.currentTurn + 1,
+                        totalScore: "--",
+                        currentStage: "end",
+                        scoreToBeat: minScore,
+                        winners: this.determineWinner(scores)
+                    })
 
-            }
-            else {
-                this.setState({
-                    keptDice: [],
-                    selected:[],
-                    lastRoll:[],
-                    scores:this.state.scores.concat([score]),
-                    pointInTurn:"roll",
-                    currentTurn: this.state.currentTurn + 1,
-                    totalScore: "--"
-                })
-            }
+                }
+                else {
+                    this.setState({
+                        keptDice: [],
+                        selected:[],
+                        lastRoll:[],
+                        scores:this.state.scores.concat([score]),
+                        pointInTurn:"roll",
+                        currentTurn: this.state.currentTurn + 1,
+                        totalScore: "--",
+                        scoreToBeat: minScore
+                    })
+                }
 
 
 
@@ -222,6 +230,16 @@ export default class Game extends React.Component {
         return score
     }
 
+    calculateMinScoreToBeat(scores) {
+        var minScore = scores[0]
+        for (var i=0; i <scores.length;i++) {
+            if (scores[i] > minScore) {
+                minScore = scores[i]
+            }
+        }
+        return minScore
+    }
+
     addSelected(dice){
         this.setState({
             selected: this.state.selected.concat([dice])
@@ -236,21 +254,81 @@ export default class Game extends React.Component {
         })
     }
 
+    determineWinner(scores) {
+        var highScore = scores[0]
+        for (var i=0; i < scores.length;i++){
+            if (scores[i]> highScore){
+                highScore = scores[i]
+            }
+        }
+        var ties = []
+        for (var i=0; i< scores.length;i++){
+            if (scores[i] === highScore) {
+                ties.push(i)
+            }
+        }
 
-    // METHODS FOR AN ACTIVE COMPUTER GAME
-    handleActiveComputer() {
-        debugger
+        var winners
+        if (ties.length>1) {
+            winners = {ties: ties, highScore: highScore}
+        }
+        else {
+            var indexOfWinner = scores.indexOf(highScore)
+            winners = {ties: [indexOfWinner], highScore: highScore}
+        }
+        return winners
+    }
+
+    handleReset(e){
+        e.preventDefault()
+        this.setState({
+            currentStage: "start",
+            currentTurn:0,
+            totalScore:"--",
+            pointInTurn:null,
+            totalPlayers: 2,
+            totalComputers:0,
+            scores:[],
+            lastRoll:[],
+            keptDice:[],
+            selected:[],
+            computerTimeout: null,
+            scoreToBeat: "--"
+        })
     }
 
 
+    handleEndGame(){
+        if (this.state.winners.ties.length> 1) {
+            var display =[]
+            for (var i=0; i< this.state.winners.ties.length;i++) {
+                display.push(<span key={i}> {this.state.winners.ties[i] + 1}, </span>)
+
+            }
+            return (
+                <div className="row">
+                    <div className="col-lg-12">
+                        <p>Players {display} all tied with a score of {this.state.scoreToBeat}</p>
+
+                        <button onClick={this.handleReset}> Play Again?</button>
+                    </div>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div className="row">
+                    <div className="col-lg-12">
+                        <p>Player {this.state.winners.ties[0] + 1} wins with a score of {this.state.scoreToBeat}</p>
 
 
-
-
-
-
-
-
+                        <button onClick={this.handleReset}> Play Again?</button>
+                    </div>
+                </div>
+            )
+        }
+        
+    }
 
 
     controlGameFlow(){
@@ -259,18 +337,11 @@ export default class Game extends React.Component {
             case "start":
                 display = this.handleStart()
                 break
-            case "chooseComputers":
-                display = this.handleChooseComputers()
-                break
             case "active-player":
                 display = this.handleActivePlayer()
                 break
-            case "active-computer":
-                display = this.handleActiveComputer()
-                break;
             case "end":
-                console.log("You have reached the end game")
-                display = <p>You have reaced the end game</p>
+                display = this.handleEndGame()
                 break
             default:
                 display = <p>You are at the default start setup</p>
