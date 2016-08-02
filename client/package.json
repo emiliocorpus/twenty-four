@@ -33,6 +33,7 @@
     "lodash": "^4.7.0",
     "react": "^0.14.8 || ^15.0.0",
     "react-dom": "^0.14.8 || ^15.0.0",
+    "react-addons": "0.9.0",
     "react-flip-move": "^2.4.2",
     "react-on-rails": "5.2.0",
     "webpack": "^1.12.14"

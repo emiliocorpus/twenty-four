@@ -1,4 +1,5 @@
 import React from 'react';
+var addons = require('react-addons');
 import FlipMove from 'react-flip-move';
 import Dice from './Dice';
 import _ from 'lodash';
@@ -11,16 +12,18 @@ export default class Game extends React.Component {
         this.state = {
             currentStage: "start",
             currentTurn:0,
+            totalScore:"--",
             pointInTurn:null,
             totalPlayers: 2,
             totalComputers:0,
+            scores:[],
             lastRoll:[],
             keptDice:[],
             selected:[]
 
         }
 
-        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers', 'displayDice', 'handleActiveGame', 'handleRoll',])
+        _.bindAll(this, ['handleSubmitPlayers', 'handleSubmitComputers', 'displayDice', 'handleActiveGame', 'handleRoll','addSelected', 'removeSelected', 'handleSubmitSelectedDice', 'calculateScore'])
     }
     // METHODS FOR CURRENTSTAGE == "start"
     handleStart() {
@@ -102,7 +105,7 @@ export default class Game extends React.Component {
 
                     <div className=".col-xs-6 .col-sm-4 col-md-4">
                         TOTAL SCORE:<br/>
-                        69
+                        {this.state.totalScore}
                     </div>
 
                     <div className=".col-xs-6 .col-sm-4 col-md-4">
@@ -134,24 +137,7 @@ export default class Game extends React.Component {
         )
     }
 
-    displayDice(type, dice){
-        var display =[]
-        switch(type) {
-            case "kept":
-                for (var i=0; i< dice.length;i++){
-                    display.push(<Dice value={dice[i]} selectable={false} key={i} />)
-                }
-                break
-            case "last":
-                for (var i=0; i< dice.length;i++){
-                    display.push(<Dice value={dice[i]} selectable={true} key={i}/>)
-                }
-                break
-        }
-        
-        return display
-    }
-
+    
     handleRoll(e){
         e.preventDefault()
         var values=[]
@@ -163,6 +149,91 @@ export default class Game extends React.Component {
             pointInTurn: "select"
         })
     }
+
+    handleSubmitSelectedDice(e){
+        e.preventDefault()
+        var values=[]
+        for (var i=0; i< this.state.selected.length;i++){
+            values.push(this.state.selected[i].props.value)
+        }
+        var kept = this.state.keptDice.concat(values)
+        var score = this.calculateScore(kept)
+        if (this.state.keptDice.length === 5) {
+            this.setState({
+                keptDice: [],
+                selected:[],
+                lastRoll:[],
+                scores:this.state.scores.concat([score]),
+                pointInTurn:"roll",
+                currentTurn: this.state.currentTurn + 1,
+                totalScore: "--"
+            })
+        }
+        else {
+            this.setState({
+                keptDice: kept,
+                selected: [],
+                lastRoll:[],
+                pointInTurn: "roll",
+                totalScore:score
+            })
+        }
+    }
+
+    calculateScore(kept){
+        var fours = 0
+        var twos = 0 
+        var score = 0 
+            for (var i=0;i<kept.length;i++) {
+                if (kept[i] === 4) {
+                    fours ++
+                }
+                if (kept[i] === 2) {
+                    twos ++
+                }
+                score += kept[i]
+            }
+            if (fours >0 && twos > 0) {
+                score -= 6
+            }
+            else {
+                score = 0
+
+            }
+        return score
+    }
+
+
+
+
+
+
+
+    addSelected(dice){
+        this.setState({
+            selected: this.state.selected.concat([dice])
+        })
+    }
+
+    removeSelected(dice){
+        var index = this.state.selected.indexOf(dice)
+        var newSelected = this.state.selected.splice(index,1)
+        this.setState({
+            selected: this.state.selected
+        })
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -186,6 +257,25 @@ export default class Game extends React.Component {
                 display = <p>You are at the default start setup</p>
                 console.log("You are at the default start setup")
         }
+        return display
+    }
+
+
+    displayDice(type, dice){
+        var display =[]
+        switch(type) {
+            case "kept":
+                for (var i=0; i< dice.length;i++){
+                    display.push(<Dice value={dice[i]} selectable={false} key={i} />)
+                }
+                break
+            case "last":
+                for (var i=0; i< dice.length;i++){
+                    display.push(<Dice value={dice[i]} selectable={true} key={i} handleSelectDie={this.addSelected} handleRemoveDie={this.removeSelected}/>)
+                }
+                break
+        }
+        
         return display
     }
 

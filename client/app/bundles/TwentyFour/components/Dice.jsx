@@ -18,14 +18,15 @@ export default class Dice extends React.Component{
 
 
 	handleToggleSelect(){
-		debugger
 		if (!this.state.selected) {
+			this.props.handleSelectDie(this)
 			this.setState({
 				selected: true,
 				displayedClasses: "dice dice-selected"
 			})
 		}
 		else {
+			this.props.handleRemoveDie(this)
 			this.setState({
 				selected:false,
 				displayedClasses: "dice"
