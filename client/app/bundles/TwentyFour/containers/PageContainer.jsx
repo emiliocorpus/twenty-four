@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Page from '../components/Page';
+import Header from '../components/Header'
 import _ from 'lodash';
 
 // Simple example of a React "smart" component

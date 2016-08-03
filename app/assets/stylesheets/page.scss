@@ -2,31 +2,103 @@
 @import "bootstrap";
 
 body {
-	background-color:#C0DCFF;
+	background-color:#21B045;
+	color:white;
+	font-family: 'Exo', sans-serif;
+	height:100%;
+	width:100%;
+	overflow-x:hidden;
 }
 
 div.body-container {
-	margin-top:100px;
+	margin-top:50px;
 }
 
 div.content-container {
 	text-align:center;
 }
 
+div.header-container {
+	width:100%;
+	display:table;
+	text-align:center;
+	background-color:#116426;
+}
+
+div.header-content{
+	height:50px;
+	display:table-cell;
+	vertial-align:middle;
+}
+
+
+
+div.bordered {
+}
+
+span.label {
+	color:red;
+	font-size:25px;
+}
+
+span.label-content {
+	color:white;
+	font-size:20px;
+}
+
+span.title{
+	font-size:35px;
+}
+
+span.description {
+	font-size:15px;
+	color:red;
+}
+
+div.margin-top-50{
+	margin-top:50px;
+}
+
+div.margin-top-5 {
+	margin-top:5px;
+}
+
+div.margin-top-500 {
+}
 
 div.dice {
 	background-color:#FFF6ED;
-	height:50px;
-	width:50px;
+	
 	display:inline-block;
-	line-height:50px;
-	vertical-align:middle;
 	margin:1%;
-	border:1px solid black;
 }
 
-div.dice-selected {
-	border:5px solid yellow;
+img.header {
+	width:50px;
+	height:50px;
+}
+
+img.dice-selected {
+	border:2px solid yellow;
+}
+
+img.description {
+	height:20px;
+	width:20px;
+}
+
+p.description {
+	text-align:justify;
+	padding:1%;
+}
+
+p.description h3 {
+	color:#116426;
+}
+
+div.dice img {
+	height:48px;
+	width:48px;
 }
 
 div.dice-container {
@@ -43,3 +115,58 @@ div.well {
 	text-align:center;
 	margin:0 auto;
 }
+
+#footer {
+    bottom: 0;
+    height: 20px;
+    width:100%;
+    margin-top:300px;
+} 
+
+#footer-content {
+	text-align:center;
+	margin:0 auto;
+}
+
+button {
+	margin-top:50px;
+}
+
+
+
+
+
+#lightbox{
+	top: 0;
+	left: 0;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background:  rgba(0, 0, 0, 0.7);
+}
+
+#lightbox p {
+	margin-top:100px;
+}
+
+div.hide-lightbox {
+	display:none;
+}
+
+div.show-lightbox {
+	display:default
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
