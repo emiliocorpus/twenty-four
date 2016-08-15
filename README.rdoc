@@ -1,28 +1,5 @@
-== README
+== TWENT-FOUR
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+The game is {TWENTY-FOUR}[https://twenty-four-on-react.herokuapp.com/], a 2 or more player game. The goal of this game is to get the highest SUM possible. The catch is you must roll AT LEAST one  and one  for you to be able to count the rest of your roll. The highest possible roll is a [2][4] | [6][6][6][6], which is equal to TWENTY-FOUR. If you don't roll the required [2] & [4], your score is ZERO. You get at most 6 total rolls, however after each roll you must keep at least ONE die. 
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+This application was constructed with Ruby on Rails and React.js via the {react_on_rails}[https://github.com/shakacode/react_on_rails] gem and utilizes node.js to integrate other external dependencies
